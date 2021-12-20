@@ -1,0 +1,48 @@
+/*이 두 스크립트를 사용하여 모든 이미지의 해시를 생성할 수 있습니다. 
+이들은 /images라는 디렉터리에 있어야 합니다. 
+그런 다음 두 번째 스크립트를 사용하여 모든 해시를 사용하고 출처 해시를 만들 수 있으며 
+각 해시(이미지)가 고유한지 확인할 수도 있습니다.
+공부중*/
+
+'use strict';
+
+const imagesDir = './images/';
+const fs = require('fs');
+const crypto = require('crypto');
+const hashes = [];
+const provenanceHash = ''
+
+const createHashFromFile = filePath => new Promise(resolve => {
+    const hash = crypto.createHash('sha256');
+    fs.createReadStream(filePath).on('data', data => hash.update(data)).on('end', () => resolve(hash.digest('hex')));
+  });
+
+fs.readdir(imagesDir, (err, files) => {
+  files.forEach(file => {    
+    (async () => {
+        const hash = await createHashFromFile(`${imagesDir}${file}`);
+        console.log(`{"tokenId":${parseInt(file.replace('.png', ''))}, "hash":"${hash}"},`)
+    })();
+  });  
+});
+
+const fs = require('fs');
+let obj = {};
+let provenanceHash = '';
+
+fs.readFile('image-hashes.json', handleFile)
+
+function handleFile(err, data) {
+    if (err) throw err
+    obj = JSON.parse(data);
+    
+    obj.forEach(o => {
+        if(obj.find(x => x.hash === o.hash && x.tokenId !== o.tokenId)) {
+            console.error(`${o.tokenId} with hash (${o.hash}) is not unique`);
+            throw err;
+        } else {
+            provenanceHash += o.hash;
+        }
+    });
+    fs.writeFileSync("provenance-hash.txt", provenanceHash);
+}
