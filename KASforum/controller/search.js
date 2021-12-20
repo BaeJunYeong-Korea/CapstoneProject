@@ -2,13 +2,11 @@ const express = require("express");
 const User = require("../model/user");
 var router = express.Router();
 
-// TODO: GET /v2/search?user-pattern=:user-prefix API
+// mongodb에서 이름이 비슷한 유저 검색
 router.get("", async (req, res) => {
-  console.log(req.query);
-  var pattern = req.query["user-pattern"];
+  var pattern = req.body["user-pattern"];
 
   const doc = await User.find(
-    // mongodb user search
     { name: { $regex: `^${pattern}`, $options: "i" } },
     "name"
   );

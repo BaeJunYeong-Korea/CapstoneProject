@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const caver = require("caver-js");
 const User = require("../model/user");
 const wallet = require("../service/kas/wallet");
@@ -8,21 +9,18 @@ const conv = require("../utils/conv");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  // When sign-up
+  // 회원가입
 
-  // TODO: create a Klaytn account API
-  const account = await wallet.CreateAccount(); // wallet API
+  const account = await wallet.CreateAccount(); // 계정 생성
   console.log(account);
 
-  // Todo: save address, publicKey to mongoose---
+  // mongodb에 name, password, address, publicKey 저장
   const user = new User({
     name: req.body.username,
     password: req.body.password,
     address: account.address,
     publicKey: account.publicKey,
   });
-
-  console.log(user.name, user.password);
 
   user.save((err, doc) => {
     if (err) console.error(err);
@@ -31,14 +29,24 @@ router.post("/", async (req, res) => {
   // --------------------------------------------
 
   res.json({
-    // return address
     address: account.address,
   });
 });
 
-// TODO: get Klay API implementation
-router.post("/:user/klay", async (req, res) => {
-  const address = await conv.userToAddress(req.params.user);
+router.post("/logIn", async (req, res) => {
+  // 로그인
+  const name = req.body.username;
+  const password = req.body.password;
+
+  User.find({ name: name, password: password }, (err, doc) => {
+    if (err) console.error(err);
+    res.send(doc);
+  });
+});
+
+// 유저의 Klay 잔액 조회
+router.post("/checkBalance", async (req, res) => {
+  const address = await conv.userToAddress(req.body.user);
   const balance = await node.getBalance(address);
 
   res.json({
@@ -46,9 +54,9 @@ router.post("/:user/klay", async (req, res) => {
   });
 });
 
-// TODO: POST /v2/user/:user/klay API. klay transaction.
-router.post("/:user/klay/send", async (req, res) => {
-  const from = await conv.userToAddress(req.params.user);
+// Klay 전송
+router.post("/sendKlay", async (req, res) => {
+  const from = await conv.userToAddress(req.body.user);
   const to = await conv.userToAddress(req.body.to);
   const amount = req.body.amount;
   console.log(from, to, amount);
@@ -60,13 +68,13 @@ router.post("/:user/klay/send", async (req, res) => {
   });
 });
 
-// TODO: GET /v2/user/:use/klay/transfer-history?start-timestamp=:ts&end-timestamp=:ts API
-router.get("/:user/klay/transfer-history", async (req, res) => {
-  const address = await conv.userToAddress(req.params.user);
-  const starttime = req.query["start-timestamp"];
-  const endtime = req.query["end-timestamp"];
+// 유저의 klay 전송 기록 조회
+router.get("/klaytransferHistory", async (req, res) => {
+  const address = await conv.userToAddress(req.body.user);
+  // const starttime = req.query["start-timestamp"];
+  // const endtime = req.query["end-timestamp"];
 
-  const history = await th.klayHistory(address, starttime, endtime);
+  const history = await th.klayHistory(address); // , starttime, endtime
   const ret = [];
   for (const el of history) {
     const klay = caver.utils.convertFromPeb(
