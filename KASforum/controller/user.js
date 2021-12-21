@@ -69,7 +69,7 @@ router.post("/sendKlay", async (req, res) => {
 });
 
 // 유저의 klay 전송 기록 조회
-router.get("/klaytransferHistory", async (req, res) => {
+router.post("/klaytransferHistory", async (req, res) => {
   const address = await conv.userToAddress(req.body.user);
   // const starttime = req.query["start-timestamp"];
   // const endtime = req.query["end-timestamp"];

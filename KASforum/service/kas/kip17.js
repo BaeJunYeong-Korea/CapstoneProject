@@ -2,7 +2,7 @@ const ApiCaller = require("./api_caller");
 const process = require("process");
 
 class Kip17 extends ApiCaller {
-  contract = "capstone"; // Contract Alias
+  contract = "capstone2"; // Contract Alias
 
   constructor() {
     super("https://kip17-api.klaytnapi.com");

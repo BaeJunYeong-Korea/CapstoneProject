@@ -1,8 +1,36 @@
 import Head from "next/head";
 import React from "react";
+import axios from "axios";
 import { useState } from "react";
 
-function ImageUploadExample() {
+function Data({ data }) {
+  return (
+    <div className="mt-10 text-blue-500 ReallyFree text-2xl">
+      owner : {data.owner}
+      <br />
+      Hash : {data.transactionHash}
+      <br />
+      image : {data.image}
+      <br />
+      <a
+        href={`/nftbuy?owner=${data.owner}&tokenId=${data.tokenId}&Hash=${data.transactionHash}&image=${data.image}`}
+        className="text-4xl text-blue-400 hover:text-black m-6"
+      >
+        <img src={JSON.parse(JSON.stringify(data.image, null, 2))} />
+      </a>
+    </div>
+  );
+}
+
+function allNFTs() {
+  const [data, setData] = useState(null);
+
+  const onClick = () => {
+    axios.get("http://localhost:8080/v1/asset/showallNFT").then((response) => {
+      setData(response.data);
+    });
+  };
+
   return (
     <div
       id="bodyy"
@@ -56,7 +84,7 @@ function ImageUploadExample() {
         />
       </Head>
       <div>
-        <div className="flex items-center justify-between w-full border-b-2	pb-6">
+        <div className="flex items-center justify-between w-full border-b-2   pb-6">
           <a href="/" className="">
             <img
               src="images/hero.gif"
@@ -72,14 +100,7 @@ function ImageUploadExample() {
             >
               INTRODUCE
             </a>
-            {
-              <a
-                href="/mint"
-                className="text-4xl text-blue-400 hover:text-black m-6"
-              >
-                MINT
-              </a>
-            }
+
             <a
               href="/#traits"
               className="text-4xl text-blue-400 hover:text-black m-6"
@@ -110,6 +131,14 @@ function ImageUploadExample() {
             >
               TWITTER
             </a>
+            {
+              <a
+                href="/MyPage"
+                className="text-4xl text-blue-400 hover:text-black m-6"
+              >
+                MyPage
+              </a>
+            }
             <a
               href="/login"
               className="text-4xl  hover:text-blue-400 m-6 text-white"
@@ -120,8 +149,17 @@ function ImageUploadExample() {
         </div>
       </div>
 
-      <div className="flex auth my-8 font-bold  justify-center items-center vw2">
-        <div className="flex auth my-8 font-bold  justify-center items-center vw2"></div>
+      <div className="flex auth my-8 items-center vw2">
+        <div>
+          <button
+            type="button"
+            className="mt-4 ReallyFree text-4xl border-6 bg-blue-400  text-white hover:text-black p-2"
+            onClick={onClick}
+          >
+            ALL NFTs
+            <br />
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col justify-between mx-6 sm:w-1/2 w-4/5 py-6 text-xl text-black text-left my-6  montserrat ">
@@ -129,10 +167,20 @@ function ImageUploadExample() {
           href="/upload"
           className="mt-4 ReallyFree text-4xl border-6 bg-blue-400  text-white hover:text-black p-2 text-center"
         >
-          UPLAOD
+          Create NFT
         </a>
       </div>
+
+      <span className="text-blue-500 ReallyFree text-4xl">
+        <div>
+          {data &&
+            data.map((data) => {
+              return <Data data={data} />;
+            })}
+        </div>
+      </span>
     </div>
   );
 }
-export default ImageUploadExample;
+
+export default allNFTs;

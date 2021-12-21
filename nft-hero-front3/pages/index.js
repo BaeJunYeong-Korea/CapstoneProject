@@ -73,19 +73,17 @@ export default function Home() {
             >
               INTRODUCE
             </a>
-            {
-              <a
-                href="/mint"
-                className="text-4xl text-blue-400 hover:text-black m-6"
-              >
-                MINT
-              </a>
-            }
             <a
               href="#traits"
               className="text-4xl text-blue-400 hover:text-black m-6"
             >
               NFT Hero
+            </a>
+            <a
+              href="/nftlist"
+              className="text-4xl text-blue-400 hover:text-black m-6"
+            >
+              List
             </a>
             <a
               href="#roadmap"
@@ -105,6 +103,14 @@ export default function Home() {
             >
               TWITTER
             </a>
+            {
+              <a
+                href="/MyPage"
+                className="text-4xl text-blue-400 hover:text-black m-6"
+              >
+                MyPage
+              </a>
+            }
             <a
               href="/logIn"
               className="text-4xl  hover:text-blue-400 m-6 text-white"
@@ -164,7 +170,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
             <a
-              href="/myPage"
+              href="/MyPage"
               className="mt-4 ReallyFree text-4xl border-6 bg-blue-400  text-white hover:text-black p-2 "
             >
               COLLECT NOW!

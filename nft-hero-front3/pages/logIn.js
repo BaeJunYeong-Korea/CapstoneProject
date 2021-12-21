@@ -23,7 +23,7 @@ const logIn = () => {
         Password: "Yjl9CfuSpBR5TBW5SGBAOqv5t8ig7efbGeaGtfmO",
       },
       body: JSON.stringify(data),
-    }).then((response) => console.log(response));
+    }).then((response) => console.log(response.data));
   };
 
   const logIn = async (e) => {
@@ -31,6 +31,7 @@ const logIn = () => {
 
     window.localStorage.setItem("userName", name);
     window.localStorage.setItem("password", password);
+    window.localStorage.setItem("klay", 1);
     // (window.localStorage.getItem("userName")
 
     console.log(
@@ -110,14 +111,7 @@ const logIn = () => {
             >
               INTRODUCE
             </a>
-            {
-              <a
-                href="/mint"
-                className="text-4xl text-blue-400 hover:text-black m-6"
-              >
-                MINT
-              </a>
-            }
+
             <a
               href="/#traits"
               className="text-4xl text-blue-400 hover:text-black m-6"
@@ -148,6 +142,14 @@ const logIn = () => {
             >
               TWITTER
             </a>
+            {
+              <a
+                href="/MyPage"
+                className="text-4xl text-blue-400 hover:text-black m-6"
+              >
+                MyPage
+              </a>
+            }
             <a
               href="/login"
               className="text-4xl  hover:text-blue-400 m-6 text-white"

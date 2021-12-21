@@ -62,20 +62,30 @@ router.get("/checkuserNFT", async (req, res) => {
 // 유저의 NFT 조회
 router.get("/showallNFT", async (req, res) => {
   const tokens = await kip17.listallTokens();
+  const array = [];
 
   await Promise.all(
     tokens.map(async (element) => {
       const owner = await conv.addressToUser(element.owner);
+      // console.log(element.owner);
+      // console.log(await conv.addressToUser(element.owner));
       const transactionHash = element.transactionHash;
       const id = element.tokenId.replace(/^0x/, "");
       const doc = await Metadata.findById(id);
       const image = doc.image;
-      const information = { owner: owner };
 
-      array.push(doc);
+      const information = {
+        owner: owner,
+        tokenId: element.tokenId,
+        transactionHash: transactionHash,
+        image: image,
+      };
+
+      array.push(information);
     })
   );
-  res.json(tokens);
+
+  res.json(array);
 });
 
 // 유저의 전체 NFT 이미지 보여주기

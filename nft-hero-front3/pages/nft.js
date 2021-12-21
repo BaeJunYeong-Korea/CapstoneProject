@@ -75,14 +75,7 @@ export default function Home() {
             >
               INTRODUCE
             </a>
-            {
-              <a
-                href="/mint"
-                className="text-4xl text-blue-400 hover:text-black m-6"
-              >
-                MINT
-              </a>
-            }
+           
             <a
               href="/#traits"
               className="text-4xl text-blue-400 hover:text-black m-6"
@@ -113,6 +106,14 @@ export default function Home() {
             >
               TWITTER
             </a>
+            {
+              <a
+                href="/MyPage"
+                className="text-4xl text-blue-400 hover:text-black m-6"
+              >
+                MyPage
+              </a>
+            }
             <a
               href="/login"
               className="text-4xl  hover:text-blue-400 m-6 text-white"

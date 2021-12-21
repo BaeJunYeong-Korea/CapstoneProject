@@ -1,72 +1,43 @@
-/*import React from 'react'
-import axios from 'axios';
-import Head from 'next/head'
-
-class SimpleFileUpload extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state ={
-      file:null
-    }
-    this.onFormSubmit = this.onFormSubmit.bind(this)
-    this.onChange = this.onChange.bind(this)
-    this.fileUpload = this.fileUpload.bind(this)
-  }
-
-  onFormSubmit(e){
-    e.preventDefault() // Stop form submit
-    this.fileUpload(this.state.file).then((response)=>{
-      console.log(response.data);
-      this.props.uploadHandler()
-    })
-  }
-
-  onChange(e) {
-    this.setState({file:e.target.files[0]})
-  }
-
-  fileUpload(file){
-    const url = 'http://localhost:8080/v1/asset/showuserNFT';
-    const formData = new FormData();
-    formData.append('file', file)
-    const config = {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
-    }
-    return axios.post(url, formData, config)
-    
-  }
-  
-
-  render() {
-    return (
-      <form onSubmit={this.onFormSubmit}>
-        <h2>File Upload</h2>
-        <input type="file" onChange={this.onChange} />
-        <button type="submit"
-        onClick={() => alert('Get success!!')}>Upload</button>
-      </form>
-
-   )
-  }
-}
-
-export default SimpleFileUpload*/
-//위에 코드도 가능 근데 레이아웃 적용하면 오류발생
-
 import Head from "next/head";
 import React from "react";
+import axios from "axios";
 import { useState } from "react";
 
 function ImageUploadExample() {
   const [fileImage, setFileImage] = useState("");
+  const [sendImage, setsendImage] = useState("");
+  const [name, setName] = useState("");
+  const [kind, setKind] = useState("");
+  const [klay, setKlay] = useState("");
+
   const saveFileImage = (e) => {
     setFileImage(URL.createObjectURL(e.target.files[0]));
+    setsendImage(e.target.files[0]);
   };
   const deleteFileImage = () => {
     URL.revokeObjectURL(fileImage);
     setFileImage("");
+  };
+
+  const onClick = () => {
+    const formData = new FormData();
+    formData.append("user", window.localStorage.getItem("userName"));
+    formData.append("name", name);
+    formData.append("kind", kind);
+    formData.append("file", sendImage);
+
+    window.localStorage.setItem("klay", klay);
+
+    axios({
+      method: "POST",
+      url: "http://localhost:8080/v1/asset/mint",
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }).then((response) => {
+      console.log(response.data);
+    });
   };
 
   return (
@@ -138,14 +109,7 @@ function ImageUploadExample() {
             >
               INTRODUCE
             </a>
-            {
-              <a
-                href="/mint"
-                className="text-4xl text-blue-400 hover:text-black m-6"
-              >
-                MINT
-              </a>
-            }
+            
             <a
               href="/#traits"
               className="text-4xl text-blue-400 hover:text-black m-6"
@@ -176,6 +140,14 @@ function ImageUploadExample() {
             >
               TWITTER
             </a>
+            {
+              <a
+                href="/MyPage"
+                className="text-4xl text-blue-400 hover:text-black m-6"
+              >
+                MyPage
+              </a>
+            }
             <a
               href="/login"
               className="text-4xl  hover:text-blue-400 m-6 text-white"
@@ -238,33 +210,46 @@ function ImageUploadExample() {
 
       <div className="form-group">
         <label className="mt-4 ReallyFree  text-2xl  hover:text-blue-400 m-6 text-white">
-          TITLE
+          Name
         </label>
         <input
-          type="title"
+          type="name"
           className="form-control"
-          placeholder="title"
+          placeholder="name"
           required
-          onChange={(e) => setNfttitle(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
       <div className="form-group">
         <label className="mt-4 ReallyFree  text-2xl  hover:text-blue-400 m-6 text-white">
-          KLAY
+          Kind
+        </label>
+        <input
+          type="kind"
+          className="form-control"
+          placeholder="kind"
+          required
+          onChange={(e) => setKind(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label className="mt-4 ReallyFree  text-2xl  hover:text-blue-400 m-6 text-white">
+          Klay
         </label>
         <input
           type="klay"
           className="form-control"
           placeholder="klay"
           required
-          onChange={(e) => setNftklay(e.target.value)}
+          onChange={(e) => setKlay(e.target.value)}
         />
       </div>
 
       <button
         className="mt-4 ReallyFree text-4xl border-6 bg-blue-400  text-white hover:text-black p-2"
-        onClick={() => alert("Get success!!")}
+        onClick={onClick}
       >
         upload
       </button>

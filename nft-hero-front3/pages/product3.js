@@ -1,11 +1,24 @@
-//nft구매 창
-//ㅇㅏㄱㅇㅓ
-
 import Head from "next/head";
 import React from "react";
-import { useState, useEffect } from "react";
+import axios from "axios";
 
-export default function Mint() {
+export default function Home() {
+  const onClick = () => {
+    const formdata = new FormData();
+    formdata.append("user", window.localStorage.getItem("userName"));
+    formdata.append("name", "Attacking in The Air_005");
+    formdata.append("kind", "Give it for free when open event!");
+    fetch("images/Attacking in The Air_005.png").then(async (res) => {
+      const blob = await res.blob();
+      formdata.append("file", blob);
+      axios
+        .post("http://localhost:8080/v1/asset/mint", formdata)
+        .then((response) => {
+          console.log(response);
+        });
+    });
+  };
+
   return (
     <div
       id="bodyy"
@@ -75,14 +88,7 @@ export default function Mint() {
             >
               INTRODUCE
             </a>
-            {
-              <a
-                href="/mint"
-                className="text-4xl text-blue-400 hover:text-black m-6"
-              >
-                MINT
-              </a>
-            }
+
             <a
               href="/#traits"
               className="text-4xl text-blue-400 hover:text-black m-6"
@@ -113,6 +119,14 @@ export default function Mint() {
             >
               TWITTER
             </a>
+            {
+              <a
+                href="/MyPage"
+                className="text-4xl text-blue-400 hover:text-black m-6"
+              >
+                MyPage
+              </a>
+            }
             <a
               href="/login"
               className="text-4xl  hover:text-blue-400 m-6 text-white"
@@ -124,20 +138,20 @@ export default function Mint() {
       </div>
 
       <div className="flex auth my-8 font-bold  justify-center items-center vw2">
-        <div class="myBuyConfirmItem">
+        <div className="myBuyConfirmItem">
           <img
             className="block rounded"
             src="images/Attacking in The Air_005.png"
           />
-          <div class="myBuyConfirmItemText">
+          <div className="myBuyConfirmItemText">
             <div className="mt-4 ReallyFree text-4xl text-black text-center m-6">
-              TITLE : test3{" "}
+              TITLE : Attacking in the Air{" "}
             </div>
           </div>
           <div className="flex auth my-8 font-bold  justify-center items-center vw2">
             <button
               className="d-flex justify-content-center mt-4 ReallyFree text-5xl border-6 bg-blue-400 text-center text-white hover:text-black p-2"
-              onClick={() => alert("Get success!!")}
+              onClick={onClick}
             >
               Get it for free
             </button>

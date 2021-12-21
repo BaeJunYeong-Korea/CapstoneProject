@@ -2,21 +2,28 @@ import Head from "next/head";
 import React from "react";
 import axios from "axios";
 
-export default function Home() {
+function ImageUploadExample() {
+  const information = {};
+  if (typeof window !== "undefined") {
+    let params = new URL(document.location).searchParams;
+    information["owner"] = params.get("owner");
+    information["tokenId"] = params.get("tokenId");
+    information["Hash"] = params.get("Hash");
+    information["image"] = params.get("image");
+  }
+  console.log(information);
+
   const onClick = () => {
-    const formdata = new FormData();
-    formdata.append("user", window.localStorage.getItem("userName"));
-    formdata.append("name", "Shooting in The Air_002");
-    formdata.append("kind", "Give it for free when open event!");
-    fetch("images/Shooting in The Air_002.png").then(async (res) => {
-      const blob = await res.blob();
-      formdata.append("file", blob);
-      axios
-        .post("http://localhost:8080/v1/asset/mint", formdata)
-        .then((response) => {
-          console.log(response);
-        });
-    });
+    axios
+      .post("http://localhost:8080/transaction", {
+        user: information.owner,
+        to: window.localStorage.getItem("userName"),
+        amount: window.localStorage.getItem("klay"),
+        token: information.tokenId,
+      })
+      .then((response) => {
+        console.log(response.data);
+      });
   };
 
   return (
@@ -72,7 +79,7 @@ export default function Home() {
         />
       </Head>
       <div>
-        <div className="flex items-center justify-between w-full border-b-2	pb-6">
+        <div className="flex items-center justify-between w-full border-b-2   pb-6">
           <a href="/" className="">
             <img
               src="images/hero.gif"
@@ -88,8 +95,7 @@ export default function Home() {
             >
               INTRODUCE
             </a>
-           
-          
+
             <a
               href="/#traits"
               className="text-4xl text-blue-400 hover:text-black m-6"
@@ -138,27 +144,26 @@ export default function Home() {
         </div>
       </div>
 
+      <div className="mt-10 text-blue-500 ReallyFree text-2xl">
+        <img src={JSON.stringify(information.image, null, 2)} />
+        Owner :{" "}
+        {information && <div>{JSON.stringify(information.Owner, null, 2)}</div>}
+        Hash :{" "}
+        {information && <div>{JSON.stringify(information.Hash, null, 2)}</div>}
+        Image :{" "}
+        {information && <div>{JSON.stringify(information.image, null, 2)}</div>}
+      </div>
+
       <div className="flex auth my-8 font-bold  justify-center items-center vw2">
-        <div className="myBuyConfirmItem">
-          <img
-            className="block rounded"
-            src="images/Shooting in The Air_002.png"
-          />
-          <div className="myBuyConfirmItemText">
-            <div className="mt-4 ReallyFree text-4xl text-black text-center m-6">
-              TITLE : Shooting in The Air{" "}
-            </div>
-          </div>
-          <div className="flex auth my-8 font-bold  justify-center items-center vw2">
-            <button
-              className="d-flex justify-content-center mt-4 ReallyFree text-5xl border-6 bg-blue-400 text-center text-white hover:text-black p-2"
-              onClick={onClick}
-            >
-              Get it for free
-            </button>
-          </div>
-        </div>
+        <button
+          className="d-flex justify-content-center mt-4 ReallyFree text-5xl border-6 bg-blue-400 text-center text-white hover:text-black p-2"
+          onClick={onClick}
+        >
+          Buy NFT
+        </button>
       </div>
     </div>
   );
 }
+
+export default ImageUploadExample;
